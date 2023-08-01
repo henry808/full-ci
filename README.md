@@ -1,5 +1,17 @@
 # full-ci
 
+## Intro
+
+This project is for completing the tutorial [here]() and create a CI solution using Terraform, Circle-CI, Ansible, AWS, Docker, etc.
+
+
+
+
+
+
+
+
+
 
 
 ## Getting started
