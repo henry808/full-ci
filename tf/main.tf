@@ -68,7 +68,32 @@ resource "aws_security_group" "web1_ec2_sg" {
   }
 }
 
-# Define ALB Listener and Target group
+# Define ALB Listener and Target group and SG
+
+# SG for ALB
+resource "aws_security_group" "web1_alb_sg" {
+  name        = "web1_alb_sg"
+  
+  # Allow inbound HTTP traffic on port 80 from anywhere
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] 
+  }
+
+  # Allow all outbound traffic
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "web1_alb_sg"
+  }
+}
 
 # ALB
 resource "aws_lb" "alb" {
@@ -116,30 +141,5 @@ resource "aws_lb_listener" "web1_front_end" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.web1_tg.arn
   }
-
-# SG for ALB
-resource "aws_security_group" "web1_alb_sg" {
-  name        = "web1_alb_sg"
-  
-  # Allow inbound HTTP traffic on port 80 from anywhere
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] 
-  }
-
-  # Allow all outbound traffic
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "web1_alb_sg"
-  }
-}
 
 }
