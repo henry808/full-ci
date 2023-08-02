@@ -19,7 +19,7 @@ resource "aws_instance" "web1" {
   instance_type = "t2.micro"
 
   # Reference the security group
-  vpc_security_group_ids = [aws_security_group.web1_sg.id]
+  vpc_security_group_ids = [aws_security_group.web1_ec2_sg.id]
 
   tags = {
     Name = "web-service"
@@ -34,8 +34,8 @@ resource "aws_key_pair" "web1_ec2_key_pair" {
 }
 
 # Create a security group to allow SSH access
-resource "aws_security_group" "web1_sg" {
-  name        = "web_sg"
+resource "aws_security_group" "web1_ec2_sg" {
+  name        = "web_ec2_sg"
   
   # SSH access
   ingress {
@@ -64,7 +64,7 @@ resource "aws_security_group" "web1_sg" {
 
   # name
   tags = {
-    Name = "web1_sg"
+    Name = "web1_ec2_sg"
   }
 }
 
@@ -75,7 +75,7 @@ resource "aws_lb" "alb" {
   name               = "web1-service-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.web1_sg.id]
+  security_groups    = [aws_security_group.web1_alb_sg.id]
   subnets            = ["subnet-ec528b94", "subnet-6619b13b", "subnet-3df00a77"] # using default subnets a,b,c
 
   tags = {
