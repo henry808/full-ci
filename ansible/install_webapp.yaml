@@ -1,0 +1,34 @@
+---
+- name: Install Python Flask web app
+  hosts: your_target_host  # Replace this with the target host or group of hosts where you want to install the web app.
+  become: true  # This allows Ansible to run commands with sudo privileges.
+
+  tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+
+    - name: Install Python and pip
+      apt:
+        name: 
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install Flask
+      pip:
+        name: flask
+        state: present
+
+    - name: Create Flask app directory
+      file:
+        path: /home/ubuntu/flask_app
+        state: directory
+
+    - name: Copy webapp.py
+      copy:
+        src: /path/to/your/local/webapp.py  # Replace with the actual path to your local webapp.py file.
+        dest: /home/ubuntu/flask_app/webapp.py
+
+    - name: Run the web app
+      shell: "nohup python3 /home/ubuntu/flask_app/webapp.py > /home/ubuntu/output.log 2>&1 &"
