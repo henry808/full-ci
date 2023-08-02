@@ -24,6 +24,8 @@ resource "aws_instance" "web1" {
   tags = {
     Name = "web-service"
   }
+
+  key_name = aws_key_pair.web1_ec2_key_pair.key_name
 }
 
 resource "aws_key_pair" "web1_ec2_key_pair" { 
