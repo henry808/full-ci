@@ -97,6 +97,8 @@ resource "aws_lb_target_group" "web1_tg" {
     timeout             = 3
     healthy_threshold   = 3
     unhealthy_threshold = 3
+    protocol = "HTTP"
+    port = "8080"
   }
 
   tags = {
