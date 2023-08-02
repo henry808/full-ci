@@ -1,6 +1,6 @@
-# DevOps Tutorial
+# Full CI
 
-This project is for completing the tutorial [here](https://gitlab.com/theuberlab/tutorials/terraform-circle-ci-aws-tutorial) and create a CI solution using Terraform, Circle-CI, Ansible, AWS, Docker, etc.
+This project is for completing everything [here](https://gitlab.com/theuberlab/tutorials/terraform-circle-ci-aws-tutorial) and create a CI solution using Terraform, Circle-CI, Ansible, AWS, Docker, etc.
 
 
 
