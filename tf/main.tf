@@ -47,10 +47,11 @@ resource "aws_security_group" "web1_sg" {
 
   # http access
   ingress {
-    from_port   = 80 
-    to_port     = 80
-    protocol    = "tcp"
+    from_port   = 8080 
+    to_port     = 8080
+    protocol    = "http"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP traffic on port 8080"
   }
   
   # download or install from anywhere
