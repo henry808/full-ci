@@ -13,9 +13,9 @@ provider "aws" {
   # secret_key = "my-secret-key"
 }
 
-# ami = ubuntu 22.04 x86
+# AWS EC2
 resource "aws_instance" "web1" {
-  ami = "ami-03f65b8614a860c29"
+  ami = "ami-03f65b8614a860c29" # ubuntu 22.04 x86
   instance_type = "t2.micro"
 
   # Reference the security group
@@ -49,7 +49,7 @@ resource "aws_security_group" "web1_sg" {
   ingress {
     from_port   = 8080 
     to_port     = 8080
-    protocol    = "http"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow HTTP traffic on port 8080"
   }
@@ -65,5 +65,53 @@ resource "aws_security_group" "web1_sg" {
   # name
   tags = {
     Name = "web1_sg"
+  }
+}
+
+# Define ALB Listener and Target group
+
+# ALB
+resource "aws_lb" "alb" {
+  name               = "web1-service-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.web1_sg.id]
+  subnets            = ["subnet-ec528b94", "subnet-6619b13b", "subnet-3df00a77"] # using default subnets a,b,c
+
+  tags = {
+    Name = "web1-service-alb"
+  }
+}
+
+# Target Group
+resource "aws_lb_target_group" "web1_tg" {
+  name     = "web1-service-tg"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = "vpc-38dd9140"
+
+  health_check {
+    enabled             = true
+    interval            = 30
+    path                = "/"
+    timeout             = 3
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+  }
+
+  tags = {
+    Name = "web1-service-tg"
+  }
+}
+
+# ALB Listener
+resource "aws_lb_listener" "web1_front_end" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web1_tg.arn
   }
 }
