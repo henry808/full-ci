@@ -1,6 +1,7 @@
 ---
+# This playbook installs and configures a web server on remote hosts using a python flask app.
 - name: Install Python Flask web app
-  hosts: your_target_host  # Replace this with the target host or group of hosts where you want to install the web app.
+  hosts: webserver1
   become: true  # This allows Ansible to run commands with sudo privileges.
 
   tasks:
@@ -27,7 +28,7 @@
 
     - name: Copy webapp.py
       copy:
-        src: /path/to/your/local/webapp.py  # Replace with the actual path to your local webapp.py file.
+        src: ../../python/webapp.py
         dest: /home/ubuntu/flask_app/webapp.py
 
     - name: Run the web app
