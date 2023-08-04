@@ -7,16 +7,18 @@
   tasks: 
   - name: Uninstall services
     apt:
+      state: absent
       purge: yes
       autoremove: yes
+      # purge: yes
+      # autoremove: yes
       name:
         - apache2
         - ftp
         - tnftp
 
   - name: Run Clean to clean up 
-    apt:
-      clean: yes
+    command: apt-get clean
 
   - name: Check if apache2 folder exists 
     stat:
