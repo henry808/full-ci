@@ -7,6 +7,10 @@ terraform {
   }
 }
 
+variable "env" {
+  default = "${env}"
+}
+
 # Configure the AWS Provider
 provider "aws" {
   # access_key = "my-access-key"
@@ -14,28 +18,28 @@ provider "aws" {
 }
 
 # AWS EC2
-resource "aws_instance" "web1" {
+resource "aws_instance" "webserver-ec2-${env}" {
   ami = "ami-03f65b8614a860c29" # ubuntu 22.04 x86
   instance_type = "t2.micro"
 
   # Reference the security group
-  vpc_security_group_ids = [aws_security_group.web1_ec2_sg.id]
+  vpc_security_group_ids = [aws_security_group.webserver-ec2-sg-${env}.id]
 
   tags = {
-    Name = "web-service"
+    Name = "webserver-ec2-${env}"
   }
 
-  key_name = aws_key_pair.web1_ec2_key_pair.key_name
+  key_name = aws_key_pair.webserver-ec2-key-pair-${env}.key_name
 }
 
-resource "aws_key_pair" "web1_ec2_key_pair" { 
-  key_name = "web1-ec2-key-pair"
+resource "aws_key_pair" "webserver-ec2-key-pair-${env}" { 
+  key_name = "webserver-ec2-key-pair-${env}"
   public_key = file("~/.ssh/gitlab072723.pub")
 }
 
-# Create a security group to allow SSH access
-resource "aws_security_group" "web1_ec2_sg" {
-  name        = "web_ec2_sg"
+# SG for EC2 instance
+resource "aws_security_group" "webserver-ec2-sg-${env}" {
+  name        = "webserver-ec2-sg-${env}"
   
   # SSH access
   ingress {
@@ -53,6 +57,13 @@ resource "aws_security_group" "web1_ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow HTTP traffic on port 8080"
   }
+
+  ingress {
+  from_port                = 8080 
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.webserver_alb_sg-${env}.id
+}
   
   # download or install from anywhere
   egress {
@@ -64,22 +75,22 @@ resource "aws_security_group" "web1_ec2_sg" {
 
   # name
   tags = {
-    Name = "web1_ec2_sg"
+    Name = "webserver-ec2-sg-${env}"
   }
 }
 
 # Define ALB Listener and Target group and SG
 
 # SG for ALB
-resource "aws_security_group" "web1_alb_sg" {
-  name        = "web1_alb_sg"
+resource "aws_security_group" "webserver_alb_sg-${env}" {
+  name        = "webserver_alb_sg-${env}"
   
   # Allow inbound HTTP traffic on port 80 from anywhere
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] 
+    source_security_group_id = aws_security_group.webserver-ec2-${env}.id
   }
 
   # Allow all outbound traffic
@@ -91,26 +102,26 @@ resource "aws_security_group" "web1_alb_sg" {
   }
 
   tags = {
-    Name = "web1_alb_sg"
+    Name = "webserver_alb_sg-${env}"
   }
 }
 
 # ALB
-resource "aws_lb" "alb" {
-  name               = "web1-service-alb"
+resource "aws_lb" "webserver-alb-${env}" {
+  name               = "webserver-alb-${env}"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.web1_alb_sg.id]
+  security_groups    = [aws_security_group.webserver_alb_sg-${env}.id]
   subnets            = ["subnet-ec528b94", "subnet-6619b13b", "subnet-3df00a77"] # using default subnets a,b,c
 
   tags = {
-    Name = "web1-service-alb"
+    Name = "webserver-alb-${env}"
   }
 }
 
 # Target Group
-resource "aws_lb_target_group" "web1_tg" {
-  name     = "web1-service-tg"
+resource "aws_lb_target_group" "webserver-tg-${env}" {
+  name     = "webserver-tg-${env}"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = "vpc-38dd9140"
@@ -127,19 +138,19 @@ resource "aws_lb_target_group" "web1_tg" {
   }
 
   tags = {
-    Name = "web1-service-tg"
+    Name = "webserver-tg-${env}"
   }
 }
 
 # ALB Listener
-resource "aws_lb_listener" "web1_front_end" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = 80
+resource "aws_lb_listener" "webserver-front-end-${env}" {
+  load_balancer_arn = aws_lb.webserver-alb-${env}.arn
+  port              = 8080
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.web1_tg.arn
+    target_group_arn = aws_lb_target_group.webserver-tg-${env}.arn
   }
 
 }

@@ -22,7 +22,7 @@
 
   - name: Check if apache2 folder exists 
     stat:
-      path: /etc/apache2
+      path: /usr/sbin/apache2
     register: apache2_status
 
   - name: Check ftp binary
