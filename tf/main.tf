@@ -143,6 +143,12 @@ resource "aws_lb_target_group" "webserver-tg-prod" {
   }
 }
 
+resource "aws_lb_target_group_attachment" "webserver-tg-attachment-prod" {
+  target_group_arn = aws_lb_target_group.webserver-tg-prod.arn
+  target_id        = aws_instance.webserver-ec2-prod.id
+  port             = 8080
+}
+
 # ALB Listener
 resource "aws_lb_listener" "webserver-front-end-prod" {
   load_balancer_arn = aws_lb.webserver-alb-prod.arn
