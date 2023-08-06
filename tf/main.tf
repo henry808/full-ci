@@ -60,10 +60,10 @@ resource "aws_security_group" "webserver-ec2-sg-prod" {
 
   # # ALB http access
   # ingress {
-  # from_port                = 8080 
-  # to_port                  = 8080
-  # protocol                 = "tcp"
-  # source_security_group_id = aws_security_group.webserver_alb_sg-prod.id
+  #   from_port                = 8080 
+  #   to_port                  = 8080
+  #   protocol                 = "tcp"
+  #   security_groups = [aws_security_group.webserver_alb_sg-prod.id]
   # }
   
   # download or install from anywhere
@@ -99,7 +99,7 @@ resource "aws_security_group" "webserver_alb_sg-prod" {
     from_port       = 8080
     to_port         = 8080
     protocol        = "tcp"
-    source_security_group_id = aws_security_group.webserver-ec2-prod.id
+    security_groups = [aws_security_group.webserver-ec2-sg-prod.id]
   }
 
   tags = {
