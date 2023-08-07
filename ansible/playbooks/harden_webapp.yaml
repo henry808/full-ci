@@ -1,0 +1,54 @@
+---
+# This playbook hardens a unix 22.04 web EC2 instance by uninstalling services and configures a firewall.
+- name: Harden Image
+  hosts: webserver1
+  become: true
+
+  tasks: 
+  - name: Uninstall services
+    apt:
+      state: absent
+      purge: yes
+      autoremove: yes
+      # purge: yes
+      # autoremove: yes
+      name:
+        - apache2
+        - ftp
+        - tnftp
+
+  - name: Run Clean to clean up 
+    command: apt-get clean
+
+  - name: Check if apache2 folder exists 
+    stat:
+      path: /usr/sbin/apache2
+    register: apache2_status
+
+  - name: Check ftp binary
+    stat:
+      path: /usr/bin/ftp 
+    register: ftp_status
+
+  - name: Check tnftp binary
+    stat:
+      path: /usr/bin/tnftp
+    register: tnftp_status
+
+  - debug:
+      msg: "Apache2 status - {{ apache2_status.stat.exists }}"
+
+  - debug:  
+      msg: "FTP status - {{ ftp_status.stat.exists }}"
+
+  - debug:
+      msg: "Tnftp status - {{ tnftp_status.stat.exists }}"
+
+  - name: Reboot EC2 instance
+    ansible.builtin.reboot:
+     reboot_timeout: 300
+
+  - name: Wait for server to come back up
+    ansible.builtin.wait_for_connection:
+      delay: 60
+      timeout: 300
