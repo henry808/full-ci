@@ -159,5 +159,4 @@ resource "aws_lb_listener" "webserver-front-end-prod" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.webserver-tg-prod.arn
   }
-
 }
