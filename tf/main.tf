@@ -7,8 +7,13 @@ terraform {
   }
 }
 
+# Variables
 variable "env" {
   default = "prod"
+}
+
+variable "project_name" {
+  default = "webserver"
 }
 
 # Configure the AWS Provider
@@ -18,28 +23,28 @@ provider "aws" {
 }
 
 # AWS EC2
-resource "aws_instance" "webserver-ec2-prod" {
+resource "aws_instance" "ec2" {
   ami = "ami-03f65b8614a860c29" # ubuntu 22.04 x86
   instance_type = "t2.micro"
 
   # Reference the security group
-  vpc_security_group_ids = [aws_security_group.webserver-ec2-sg-prod.id]
+  vpc_security_group_ids = [aws_security_group.ec2-sg.id]
 
   tags = {
-    Name = "webserver-ec2-${var.env}"
+    Name = "${var.project_name}-ec2-${var.env}"
   }
 
-  key_name = aws_key_pair.webserver-ec2-key-pair-prod.key_name
+  key_name = aws_key_pair.ec2-key-pair.key_name
 }
 
-resource "aws_key_pair" "webserver-ec2-key-pair-prod" { 
-  key_name = "webserver-ec2-key-pair-${var.env}"
+resource "aws_key_pair" "ec2-key-pair" { 
+  key_name = "${var.project_name}-ec2-key-pair-${var.env}"
   public_key = file("~/.ssh/gitlab072723.pub")
 }
 
 # SG for EC2 instance
-resource "aws_security_group" "webserver-ec2-sg-prod" {
-  name        = "webserver-ec2-sg-${var.env}"
+resource "aws_security_group" "ec2-sg" {
+  name        = "${var.project_name}-ec2-sg-${var.env}"
   
   # SSH access
   ingress {
@@ -58,14 +63,6 @@ resource "aws_security_group" "webserver-ec2-sg-prod" {
     description = "Allow HTTP traffic on port 8080"
   }
 
-  # # ALB http access
-  # ingress {
-  #   from_port                = 8080 
-  #   to_port                  = 8080
-  #   protocol                 = "tcp"
-  #   security_groups = [aws_security_group.webserver_alb_sg-prod.id]
-  # }
-  
   # download or install from anywhere
   egress {
     from_port       = 0
@@ -76,15 +73,15 @@ resource "aws_security_group" "webserver-ec2-sg-prod" {
 
   # name
   tags = {
-    Name = "webserver-ec2-sg-${var.env}"
+    Name = "${var.project_name}-ec2-sg-${var.env}"
   }
 }
 
 # Define ALB Listener and Target group and SG
 
 # SG for ALB
-resource "aws_security_group" "webserver_alb_sg-prod" {
-  name        = "webserver_alb_sg-${var.env}"
+resource "aws_security_group" "alb-sg" {
+  name        = "${var.project_name}_alb_sg-${var.env}"
   
   # Allow inbound HTTP traffic on port 8080 from anywhere (listener)
   ingress {
@@ -99,30 +96,30 @@ resource "aws_security_group" "webserver_alb_sg-prod" {
     from_port       = 8080
     to_port         = 8080
     protocol        = "tcp"
-    security_groups = [aws_security_group.webserver-ec2-sg-prod.id]
+    security_groups = [aws_security_group.wec2-sg.id]
   }
 
   tags = {
-    Name = "webserver_alb_sg-${var.env}"
+    Name = "${var.project_name}_alb_sg-${var.env}"
   }
 }
 
 # ALB
-resource "aws_lb" "webserver-alb-prod" {
-  name               = "webserver-alb-${var.env}"
+resource "aws_lb" "alb" {
+  name               = "${var.project_name}-alb-${var.env}"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.webserver_alb_sg-prod.id]
+  security_groups    = [aws_security_group.alb-sg.id]
   subnets            = ["subnet-ec528b94", "subnet-6619b13b", "subnet-3df00a77"] # using default subnets a,b,c
 
   tags = {
-    Name = "webserver-alb-${var.env}"
+    Name = "${var.project_name}-alb-${var.env}"
   }
 }
 
 # Target Group
-resource "aws_lb_target_group" "webserver-tg-prod" {
-  name     = "webserver-tg-${var.env}"
+resource "aws_lb_target_group" "tg" {
+  name     = "${var.project_name}-tg-${var.env}"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = "vpc-38dd9140"
@@ -139,24 +136,24 @@ resource "aws_lb_target_group" "webserver-tg-prod" {
   }
 
   tags = {
-    Name = "webserver-tg-${var.env}"
+    Name = "${var.project_name}-tg-${var.env}"
   }
 }
 
-resource "aws_lb_target_group_attachment" "webserver-tg-attachment-prod" {
-  target_group_arn = aws_lb_target_group.webserver-tg-prod.arn
-  target_id        = aws_instance.webserver-ec2-prod.id
+resource "aws_lb_target_group_attachment" "tg-attachment" {
+  target_group_arn = aws_lb_target_group.tg.arn
+  target_id        = aws_instance.ec2.id
   port             = 8080
 }
 
 # ALB Listener
-resource "aws_lb_listener" "webserver-front-end-prod" {
-  load_balancer_arn = aws_lb.webserver-alb-prod.arn
+resource "aws_lb_listener" "front-end" {
+  load_balancer_arn = aws_lb.alb.arn
   port              = 8080
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.webserver-tg-prod.arn
+    target_group_arn = aws_lb_target_group.tg.arn
   }
 }
