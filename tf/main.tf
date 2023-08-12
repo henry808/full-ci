@@ -9,28 +9,26 @@ terraform {
 
 # Variables defined in variables.tf and set in main.tf
 
-
-
 # Configure the AWS Provider
 provider "aws" {
   # access_key = "my-access-key" # configured as env vars
   # secret_key = "my-secret-key" # configured as env vars
 }
 
-# AWS EC2
-resource "aws_instance" "ec2" {
-  ami = var.ami
+# EC2 Instances
+module "instances" {
+  source = "./modules/instances"
+  env = var.env
+  project_name = var.project_name
   instance_type = var.instance_type
-
-  # Reference the security group
-  vpc_security_group_ids = [aws_security_group.ec2-sg.id]
-
-  tags = {
-    Name = "${var.project_name}-ec2-${var.env}"
-  }
-
-  key_name = aws_key_pair.ec2-key-pair.key_name
+  ami = var.ami
+  local_keypair_path = var.local_keypair_path
 }
+
+
+
+
+
 
 # Define ALB Listener and Target group and SG
 
@@ -51,7 +49,7 @@ resource "aws_security_group" "alb-sg" {
     from_port       = 8080
     to_port         = 8080
     protocol        = "tcp"
-    security_groups = [aws_security_group.ec2-sg.id]
+    security_groups = [module.instances.ec2-sg.id]
   }
 
   tags = {
@@ -97,7 +95,7 @@ resource "aws_lb_target_group" "tg" {
 
 resource "aws_lb_target_group_attachment" "tg-attachment" {
   target_group_arn = aws_lb_target_group.tg.arn
-  target_id        = aws_instance.ec2.id
+  target_id        = module.instances.ec2.id
   port             = 8080
 }
 
