@@ -7,25 +7,18 @@ terraform {
   }
 }
 
-# Variables
-variable "env" {
-  default = "prod"
-}
-
-variable "project_name" {
-  default = "webserver"
-}
+# Variables defined in variables.tf and set in main.tf
 
 # Configure the AWS Provider
 provider "aws" {
-  # access_key = "my-access-key"
-  # secret_key = "my-secret-key"
+  # access_key = "my-access-key" # configured as env vars
+  # secret_key = "my-secret-key" # configured as env vars
 }
 
 # AWS EC2
 resource "aws_instance" "ec2" {
-  ami = "ami-03f65b8614a860c29" # ubuntu 22.04 x86
-  instance_type = "t2.micro"
+  ami = var.ami
+  instance_type = var.instance_type
 
   # Reference the security group
   vpc_security_group_ids = [aws_security_group.ec2-sg.id]
