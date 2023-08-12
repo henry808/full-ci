@@ -9,6 +9,8 @@ terraform {
 
 # Variables defined in variables.tf and set in main.tf
 
+
+
 # Configure the AWS Provider
 provider "aws" {
   # access_key = "my-access-key" # configured as env vars
