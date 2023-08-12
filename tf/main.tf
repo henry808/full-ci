@@ -32,46 +32,6 @@ resource "aws_instance" "ec2" {
   key_name = aws_key_pair.ec2-key-pair.key_name
 }
 
-resource "aws_key_pair" "ec2-key-pair" { 
-  key_name = "${var.project_name}-ec2-key-pair-${var.env}"
-  public_key = file("~/.ssh/gitlab072723.pub")
-}
-
-# SG for EC2 instance
-resource "aws_security_group" "ec2-sg" {
-  name        = "${var.project_name}-ec2-sg-${var.env}"
-  
-  # SSH access
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] 
-  }
-
-  # http access
-  ingress {
-    from_port   = 8080 
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTP traffic on port 8080"
-  }
-
-  # download or install from anywhere
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  # name
-  tags = {
-    Name = "${var.project_name}-ec2-sg-${var.env}"
-  }
-}
-
 # Define ALB Listener and Target group and SG
 
 # SG for ALB
@@ -91,7 +51,7 @@ resource "aws_security_group" "alb-sg" {
     from_port       = 8080
     to_port         = 8080
     protocol        = "tcp"
-    security_groups = [aws_security_group.wec2-sg.id]
+    security_groups = [aws_security_group.ec2-sg.id]
   }
 
   tags = {
