@@ -1,19 +1,10 @@
+# Load Balancer
+# Includes ALB, SG, and Listener and target group
 terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
 }
 
 # Variables defined in variables.tf and set in main.tf
 
-# Configure the AWS Provider
-provider "aws" {
-  # access_key = "my-access-key" # configured as env vars
-  # secret_key = "my-secret-key" # configured as env vars
-}
 
 # EC2 Instances
 module "instances" {
@@ -49,7 +40,7 @@ resource "aws_security_group" "alb-sg" {
     from_port       = 8080
     to_port         = 8080
     protocol        = "tcp"
-    security_groups = [module.instances.ec2-sg.id]
+    security_groups = [module.instances.ec2-sg.id] # module.instances.ec2-sg.id
   }
 
   tags = {
@@ -63,7 +54,7 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb-sg.id]
-  subnets            = ["subnet-ec528b94", "subnet-6619b13b", "subnet-3df00a77"] # using default subnets a,b,c
+  subnets            = var.subnets
 
   tags = {
     Name = "${var.project_name}-alb-${var.env}"
@@ -93,6 +84,7 @@ resource "aws_lb_target_group" "tg" {
   }
 }
 
+# List your ec2 instances in the target group here
 resource "aws_lb_target_group_attachment" "tg-attachment" {
   target_group_arn = aws_lb_target_group.tg.arn
   target_id        = module.instances.ec2.id
