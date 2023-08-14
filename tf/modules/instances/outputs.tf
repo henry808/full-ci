@@ -6,5 +6,5 @@ output ec2-sg {
 
 output ec2 {
   value = aws_instance.ec2
-  description = "Instance full obj"
+  description = "EC2 Instance full obj"
 }

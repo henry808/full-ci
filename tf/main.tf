@@ -25,7 +25,6 @@ module "instances" {
   local_keypair_path = var.local_keypair_path
 }
 
-
 # Load Balancer
 module "loadbalancer" {
   source = "./modules/loadbalancer"
