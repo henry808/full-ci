@@ -9,9 +9,9 @@ variable "project_name" {
   description = "Unique project name"
 }
 
-variable "ec2_sg_id" {
+variable "instance_type" {
   type = string
-  description = "ID of Instance Security Group needed for connection with ALB SG"
+  description = "Instance Type"
 }
 
 variable "ami" {

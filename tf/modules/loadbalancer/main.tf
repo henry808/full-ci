@@ -1,27 +1,9 @@
 # Load Balancer
-# Includes ALB, SG, and Listener and target group
+# Define ALB Listener and Target group and SG
 terraform {
 }
 
 # Variables defined in variables.tf and set in main.tf
-
-
-# EC2 Instances
-module "instances" {
-  source = "./modules/instances"
-  env = var.env
-  project_name = var.project_name
-  instance_type = var.instance_type
-  ami = var.ami
-  local_keypair_path = var.local_keypair_path
-}
-
-
-
-
-
-
-# Define ALB Listener and Target group and SG
 
 # SG for ALB
 resource "aws_security_group" "alb-sg" {
@@ -40,7 +22,7 @@ resource "aws_security_group" "alb-sg" {
     from_port       = 8080
     to_port         = 8080
     protocol        = "tcp"
-    security_groups = [module.instances.ec2-sg.id] # module.instances.ec2-sg.id
+    security_groups = [var.ec2_sg_id] # module.instances.ec2-sg.id
   }
 
   tags = {
@@ -87,7 +69,7 @@ resource "aws_lb_target_group" "tg" {
 # List your ec2 instances in the target group here
 resource "aws_lb_target_group_attachment" "tg-attachment" {
   target_group_arn = aws_lb_target_group.tg.arn
-  target_id        = module.instances.ec2.id
+  target_id        = var.ec2_instance_id
   port             = 8080
 }
 

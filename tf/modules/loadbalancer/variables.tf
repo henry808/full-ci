@@ -9,9 +9,9 @@ variable "project_name" {
   description = "Unique project name"
 }
 
-variable "instance_type" {
+variable "ec2_sg_id" {
   type = string
-  description = "Instance Type"
+  description = "ID of Instance Security Group needed for connection with ALB SG"
 }
 
 variable "subnets" {
