@@ -19,7 +19,7 @@ variable "subnets" {
   description = "List of subnets"
 }
 
-variable "ec2_instance_id" {
-  type = string
-  description = "Instance ID"  
+variable "ec2_instance_id_list" {
+  type = list(string)
+  description = "List of IDs of all Instances"  
 }

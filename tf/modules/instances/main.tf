@@ -19,7 +19,7 @@ resource "aws_instance" "ec2" {
   vpc_security_group_ids = [aws_security_group.ec2-sg.id]
 
   tags = {
-    Name = "${var.project_name}-ec2-${var.env}-${var.count.index + 1}"
+    Name = "${var.project_name}-ec2-${var.env}-${count.index + 1}"
   }
 
   key_name = aws_key_pair.ec2-key-pair.key_name

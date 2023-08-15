@@ -40,5 +40,5 @@ module "loadbalancer" {
   project_name = var.project_name
   ec2_sg_id = module.instances.ec2-sg.id
   subnets = var.subnets
-  ec2_instance_id = module.instances.ec2.id
+  ec2_instance_id_list = module.instances.ec2_list[*].id
 }

@@ -4,7 +4,7 @@ output ec2-sg {
   description = "EC2 Security Group full obj"
 }
 
-output ec2 {
+output ec2_list {
   value = aws_instance.ec2
   description = "EC2 Instance full obj"
 }
