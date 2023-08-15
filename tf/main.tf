@@ -1,3 +1,9 @@
+# Build a webserver with load balancer in front of it.
+#
+# To run:
+# cd tf
+# terraform plan -var-file="prod.tfvars"
+
 terraform {
   required_providers {
     aws = {

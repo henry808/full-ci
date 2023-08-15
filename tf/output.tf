@@ -5,6 +5,6 @@ output ec2 {
 }
 
 output lb {
-  value = module.loadbalancer.alb.public_dns
+  value = module.loadbalancer.alb.dns_name
   description = "ALB full obj"
 }
