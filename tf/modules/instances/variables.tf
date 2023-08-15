@@ -9,9 +9,19 @@ variable "project_name" {
   description = "Unique project name"
 }
 
+variable "instance_count" {
+  type = number
+  description = "Number of ec2 instances"
+}
+
 variable "instance_type" {
   type = string
   description = "Instance Type"
+}
+
+variable "subnets" {
+  type = list(string)
+  description = "List of subnets"
 }
 
 variable "ami" {

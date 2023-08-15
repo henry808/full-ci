@@ -9,6 +9,11 @@ variable "project_name" {
   description = "Unique project name"
 }
 
+variable "instance_count" {
+  type = number
+  description = "Number of ec2 instances"
+}
+
 variable "instance_type" {
   type = string
   description = "Instance Type"
@@ -22,4 +27,9 @@ variable "ami" {
 variable "local_keypair_path" {
   type = string
   description = "Keypair path to pub keypair file on local computer (~/.ssh/example.pub)"  
+}
+
+variable "subnets" {
+  type = list(string)
+  description = "List of subnets"
 }

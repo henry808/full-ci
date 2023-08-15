@@ -26,9 +26,11 @@ module "instances" {
   source = "./modules/instances"
   env = var.env
   project_name = var.project_name
+  instance_count = var.instance_count
   instance_type = var.instance_type
   ami = var.ami
   local_keypair_path = var.local_keypair_path
+  subnets = var.subnets
 }
 
 # Load Balancer
@@ -37,6 +39,6 @@ module "loadbalancer" {
   env = var.env
   project_name = var.project_name
   ec2_sg_id = module.instances.ec2-sg.id
-  subnets = ["subnet-ec528b94", "subnet-6619b13b", "subnet-3df00a77"] # using default subnets a,b,c
+  subnets = var.subnets
   ec2_instance_id = module.instances.ec2.id
 }
