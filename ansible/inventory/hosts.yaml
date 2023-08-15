@@ -1,6 +1,6 @@
 all:
   hosts:
     webserver1:
-      ansible_host: "ec2-54-186-157-170.us-west-2.compute.amazonaws.com"
+      ansible_host: "ec2-35-86-107-31.us-west-2.compute.amazonaws.com"
       ansible_user: ubuntu
       ansible_ssh_private_key_file: "~/.ssh/gitlab072723.pem"
