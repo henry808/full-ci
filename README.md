@@ -12,5 +12,28 @@ git branch -M main
 git push -uf origin main
 ```
 
+## Develop Docker locally
+
+## Build
+```bash
+cd docker/app
+docker build -t webapp .
+```
+
+## Run
+```bash
+docker run -dp 8080:8080 webapp
+```
+
+## Navigate to [http://localhost:8080/](http://localhost:8080)
+
+## Attach
+```bash
+docker attach webapp
+docker exec -it webapp bash
+```
+
+
+
 ## Author
 Henry Grantham
