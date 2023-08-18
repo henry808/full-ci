@@ -2,6 +2,9 @@
 # Ubuntu base image (latest)
 FROM ubuntu:latest
 
+# Switch to ubuntu user.
+USER ubuntu
+
 # Intall python, pip, etc.
 RUN apt-get update && apt-get install -y \
     python3 \
