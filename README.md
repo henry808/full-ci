@@ -3,9 +3,32 @@
 This project is to create a CI solution using Terraform, Circle-CI, Ansible, AWS, Docker, etc.
 
 ## Intro
-S
+An automated way to deploy a webapp. Currently it uses or more EC2 instances interfaced from a load balancer.
 
-## Connect to this file:
+Http only at the moment, but https coming later.
+
+
+# Current workflow
+1. Create ec2 instances and load balancer using terraform:
+```bash
+cd tf
+terraform plan -var-file="prod.tfvars"
+```
+    1. Can create test or dev environments by makeing a dev.tfvars and test.tfvars and running terraform using them.
+    2. Can use as many instances as you want.
+    3. public DNS for instances and load balancers are output when you run the terraform launcher. Instance DNS' are output for debugging.
+
+2. Ansible scripts for installing docker and then for installing the webapp via docker.
+```bash
+cd ansible
+ansible-playbook -i inventory/hosts.yaml playbooks/install_docker.yaml
+ansible-playbook -i inventory/hosts.yaml playbooks/install_docker_webapp.yaml
+```
+3. Navigate to http://<LB public DNS>//:8080
+
+ 
+
+## Developing for this project.
 ```
 cd existing_repo
 git remote add origin https://gitlab.com/henry808v21/projects/full-ci.git
@@ -15,30 +38,32 @@ git push -uf origin main
 
 ## Develop Docker locally
 
-## Build
+### Build
 ```bash
 cd docker/app
 docker build -t webapp .
 ```
 
-## Build and push to registry
-docker build -t henry808/webapp_private:latest .
-docker push henry808/webapp_private:latest
-```
-
-## Run
+### Run locally
 ```bash
 docker run -dp 8080:8080 webapp
 ```
 
-## Navigate to [http://localhost:8080/](http://localhost:8080)
+### Test locally:
+Navigate to [http://localhost:8080/](http://localhost:8080)
 
-## Attach
+### Attach
 ```bash
 docker attach webapp
 docker exec -it webapp bash
 ```
 
+
+### Build and push to registry for ec2 use:
+```bash
+docker build -t henry808/webapp_private:latest .
+docker push henry808/webapp_private:latest
+```
 
 
 ## Author
