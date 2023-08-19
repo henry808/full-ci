@@ -1,8 +1,9 @@
 # Full CI
 
-This project is for completing everything [here](https://gitlab.com/theuberlab/tutorials/terraform-circle-ci-aws-tutorial) and create a CI solution using Terraform, Circle-CI, Ansible, AWS, Docker, etc.
+This project is to create a CI solution using Terraform, Circle-CI, Ansible, AWS, Docker, etc.
 
-
+## Intro
+S
 
 ## Connect to this file:
 ```
@@ -18,7 +19,11 @@ git push -uf origin main
 ```bash
 cd docker/app
 docker build -t webapp .
-docker build -t webapp_private:latest .
+```
+
+## Build and push to registry
+docker build -t henry808/webapp_private:latest .
+docker push henry808/webapp_private:latest
 ```
 
 ## Run
