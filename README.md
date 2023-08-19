@@ -18,6 +18,7 @@ git push -uf origin main
 ```bash
 cd docker/app
 docker build -t webapp .
+docker build -t webapp_private:latest .
 ```
 
 ## Run

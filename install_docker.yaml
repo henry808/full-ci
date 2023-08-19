@@ -1,0 +1,71 @@
+---
+# This playbook installs and configures a web server on remote hosts using a python flask app.
+# cd ansible
+# ansible-playbook -i inventory/hosts.yaml playbooks/install_docker.yaml
+- name: Install Docker
+  hosts: webserver1
+  become: true  # This allows Ansible to run commands with sudo privileges.
+
+  tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+
+    # Install packages needed for adding Docker repo over HTTPS
+    - name: Install Docker prerequisites
+      apt:
+        name:
+          - apt-transport-https 
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: latest
+        update_cache: yes
+
+      
+    # Add Docker's official GPG key to verify packages
+    - name: Add Docker's GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    # Add Docker's stable repository for installing packages
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present  
+
+    # Install latest version of Docker CE
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: latest
+
+    # Add ec2-user to the docker group to manage Docker
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    # Start Docker and enable it to start on boot
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Test Docker install
+      command: docker --version
+      register: docker_version
+      ignore_errors: true
+
+    - name: Print Docker version  
+      debug:
+        msg: "Docker version is {{ docker_version.stdout }}"
+      when: docker_version.rc == 0
+
+    - name: Print failure message
+      debug: 
+        msg: "Docker does not seem to be installed. Install failed."
+      when: docker_version.rc != 0
