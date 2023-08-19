@@ -7,15 +7,18 @@
 
   tasks:
 
-  # Copies the config.json file containing Docker Hub credentials
-  - name: Copy Docker credentials config
+  # Create directory for docker configs.
+  file:
+    path: ~/.docker
+    state: directory
+    mode: 0700
 
-    copy:
-      src: ~/.docker2/config.json
-      dest: ~/.docker/config.json
-      mode: 0600
-      create: yes
-      mode: 0700
+# Copies the config.json file containing Docker Hub credentials
+- name: Copy Docker config 
+  copy:
+    src: ~/.docker2/config.json   
+    dest: ~/.docker/config.json
+    mode: 0600
 
   # Pulls private image from Docker Hub using credentials  
   - name: Pull private Docker Hub image
