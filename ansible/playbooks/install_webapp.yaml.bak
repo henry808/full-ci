@@ -1,0 +1,37 @@
+---
+# This playbook installs and configures a web server on remote hosts using a python flask app.
+# cd ansible
+# ansible-playbook -i inventory/hosts.yaml playbooks/install_webapp.yaml
+- name: Install Python Flask web app
+  hosts: webserver1
+  become: true  # This allows Ansible to run commands with sudo privileges.
+
+  tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+
+    - name: Install Python and pip
+      apt:
+        name: 
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install Flask
+      pip:
+        name: flask
+        state: present
+
+    - name: Create Flask app directory
+      file:
+        path: /home/ubuntu/flask_app
+        state: directory
+
+    - name: Copy webapp.py
+      copy:
+        src: ../../python/webapp.py
+        dest: /home/ubuntu/flask_app/webapp.py
+
+    - name: Run the web app
+      shell: "nohup python3 /home/ubuntu/flask_app/webapp.py > /home/ubuntu/output.log 2>&1 &"
