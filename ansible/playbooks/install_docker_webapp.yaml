@@ -9,7 +9,7 @@
   - name: Copy Docker credentials config
 
     copy:
-      src: ~/.docker/config.json
+      src: ~/.docker2/config.json
       dest: ~/.docker/config.json
       mode: 0600
 
