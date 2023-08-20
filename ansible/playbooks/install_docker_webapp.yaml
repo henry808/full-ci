@@ -6,20 +6,11 @@
   hosts: webserver1
 
   tasks:
-
-  # Create directory for docker configs.
-  - name: Create Docker config directory
-    file:
-      path: ~/.docker
-      state: directory
-      mode: 0700
-
-  # Copies the config.json file containing Docker Hub credentials
-  - name: Copy Docker config 
-    copy:
-      src: ~/.docker2/config.json   
-      dest: ~/.docker/config.json
-      mode: 0600
+  # To use docker command
+  - name: Install docker python module to run docker tasks
+    pip:
+      name: docker-py
+      state: present
 
   # Pulls private image from Docker Hub using credentials  
   - name: Pull private Docker Hub image
