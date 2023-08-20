@@ -65,6 +65,11 @@ docker build -t henry808/webapp_private:latest .
 docker push henry808/webapp_private:latest
 ```
 
+## Possible additions
+1. Add ASG
+2. Support for Private Docker Images
+3. https
+
 
 ## Author
 Henry Grantham
