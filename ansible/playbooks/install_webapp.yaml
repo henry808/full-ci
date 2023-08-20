@@ -11,61 +11,27 @@
       apt:
         update_cache: yes
 
-    # Install packages needed for adding Docker repo over HTTPS
-    - name: Install Docker prerequisites
+    - name: Install Python and pip
       apt:
-        name:
-          - apt-transport-https 
-          - ca-certificates
-          - curl
-          - software-properties-common
-        state: latest
-        update_cache: yes
-
-      
-    # Add Docker's official GPG key to verify packages
-    - name: Add Docker's GPG key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
+        name: 
+          - python3
+          - python3-pip
         state: present
 
-    # Add Docker's stable repository for installing packages
-    - name: Add Docker APT repository
-      apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present  
+    - name: Install Flask
+      pip:
+        name: flask
+        state: present
 
-    # Install latest version of Docker CE
-    - name: Install Docker
-      apt:
-        name: docker-ce
-        state: latest
+    - name: Create Flask app directory
+      file:
+        path: /home/ubuntu/flask_app
+        state: directory
 
-    # Add ec2-user to the docker group to manage Docker
-    - name: Add ec2-user to docker group
-      user:
-        name: ec2-user
-        groups: docker
-        append: yes
+    - name: Copy webapp.py
+      copy:
+        src: ../../python/webapp.py
+        dest: /home/ubuntu/flask_app/webapp.py
 
-  # Start Docker and enable it to start on boot
-  - name: Start Docker service
-    service:
-      name: docker
-      state: started
-      enabled: yes
-
-  - name: Test Docker install
-    command: docker --version
-    register: docker_version
-    ignore_errors: true
-
-  - name: Print Docker version  
-    debug:
-      msg: "Docker version is {{ docker_version.stdout }}"
-    when: docker_version.rc == 0
-
-  - name: Print failure message
-    debug: 
-      msg: "Docker does not seem to be installed. Install failed."
-    when: docker_version.rc != 0
+    - name: Run the web app
+      shell: "nohup python3 /home/ubuntu/flask_app/webapp.py > /home/ubuntu/output.log 2>&1 &"
