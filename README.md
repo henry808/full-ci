@@ -76,6 +76,7 @@ docker push henry808/webapp:latest
 1. Add ASG
 2. Support for Private Docker Images
 3. https
+4. Lock ansible docker pull script to a version and remove force pull.
 
 
 ## Author
