@@ -20,6 +20,11 @@
       tag: latest
       source: pull
 
+  - name: Pull the latest Docker image
+    docker_image:
+      name: henry808/webapp_private:latest
+      source: pull
+
   # Runs a container using the private Docker Hub image
   - name: Run container from image
     docker_container:
