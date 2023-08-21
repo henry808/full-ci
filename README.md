@@ -19,14 +19,15 @@ terraform plan -var-file="prod.tfvars"
     3. public DNS for instances and load balancers are output when you run the terraform launcher. Instance DNS' are output for debugging.
 
 2. Ansible scripts for installing docker and then for installing the webapp via docker.
+
+> First Set hosts in playbook to environment: prod_webservers, test_webservers, or dev_webservers
+
 ```bash
 cd ansible
 ansible-playbook -i inventory/hosts.yaml playbooks/install_docker.yaml
 ansible-playbook -i inventory/hosts.yaml playbooks/install_docker_webapp.yaml
 ```
 3. Navigate to http://<LB public DNS>//:8080
-
- 
 
 ## Developing for this project.
 ```
@@ -46,7 +47,7 @@ docker build -t henry808/webapp .
 
 ### Run locally
 ```bash
-docker run -e ENV=test -dp 8080:8080 henry808/webapp
+docker run -d -e ENV=test -p 8080:8080 henry808/webapp
 ```
 
 ### Test locally:
