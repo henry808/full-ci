@@ -41,16 +41,22 @@ git push -uf origin main
 ### Build
 ```bash
 cd docker/app
-docker build -t webapp .
+docker build -t henry808/webapp .
 ```
 
 ### Run locally
 ```bash
-docker run -dp 8080:8080 webapp
+docker run -e ENV=test -dp 8080:8080 henry808/webapp
 ```
 
 ### Test locally:
 Navigate to [http://localhost:8080/](http://localhost:8080)
+
+
+### To copy files from docker container to local 
+```bash
+docker cp da681f7a7b0d:/home/ubuntu/ /home/henry808/temp/webapp/
+```
 
 ### Attach
 ```bash
@@ -61,8 +67,8 @@ docker exec -it webapp bash
 
 ### Build and push to registry for ec2 use:
 ```bash
-docker build -t henry808/webapp_private:latest .
-docker push henry808/webapp_private:latest
+docker build -t henry808/webapp:latest .
+docker push henry808/webapp:latest
 ```
 
 ## Possible additions
