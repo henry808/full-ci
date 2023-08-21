@@ -4,3 +4,13 @@ all:
       ansible_host: "ec2-35-86-107-31.us-west-2.compute.amazonaws.com"
       ansible_user: ubuntu
       ansible_ssh_private_key_file: "~/.ssh/gitlab072723.pem"
+
+# prod, test, dev go here
+groups:
+  prod_webservers:
+   - webserver1
+
+# vars go here
+host_vars:
+  prod_webserver:
+    env: prod
