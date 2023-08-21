@@ -1,0 +1,11 @@
+# This is an example
+# Fill in the auth with your auth and add to .docker
+# Auth comes from:
+#   echo -n "myusername:password" | base64
+{
+    "auths": {
+      "https://index.docker.io/v1/": {
+        "auth": "<Fake example: bXl1c2VybmFtZTpwYXNzd29yZA==>"
+      }
+    }
+}

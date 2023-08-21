@@ -10,14 +10,16 @@ resource "aws_key_pair" "ec2-key-pair" {
 
 # AWS EC2
 resource "aws_instance" "ec2" {
+  count = var.instance_count
   ami = var.ami
   instance_type = var.instance_type
+  subnet_id = var.subnets[count.index % length(var.subnets)]
 
   # Reference the security group
   vpc_security_group_ids = [aws_security_group.ec2-sg.id]
 
   tags = {
-    Name = "${var.project_name}-ec2-${var.env}"
+    Name = "${var.project_name}-ec2-${var.env}-${count.index + 1}"
   }
 
   key_name = aws_key_pair.ec2-key-pair.key_name

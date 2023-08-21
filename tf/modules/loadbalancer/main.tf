@@ -68,8 +68,9 @@ resource "aws_lb_target_group" "tg" {
 
 # List your ec2 instances in the target group here
 resource "aws_lb_target_group_attachment" "tg-attachment" {
+  count = length(var.ec2_instance_id_list)
   target_group_arn = aws_lb_target_group.tg.arn
-  target_id        = var.ec2_instance_id
+  target_id        = var.ec2_instance_id_list[count.index]
   port             = 8080
 }
 
