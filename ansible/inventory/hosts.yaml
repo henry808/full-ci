@@ -11,6 +11,6 @@ groups:
    - webserver1
 
 # vars go here
-host_vars:
-  prod_webserver:
+group_vars:
+  prod_webservers:
     env: prod

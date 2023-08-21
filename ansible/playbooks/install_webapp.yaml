@@ -3,7 +3,7 @@
 # cd ansible
 # ansible-playbook -i inventory/hosts.yaml playbooks/install_webapp.yaml
 - name: Install Python Flask web app
-  hosts: webserver1
+  hosts: prod_webservers
   become: true  # This allows Ansible to run commands with sudo privileges.
 
   tasks:
