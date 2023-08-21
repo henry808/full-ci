@@ -3,7 +3,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-env = os.environ.get('ENV')
+env = os.environ.get('ENV', 'defaultenv')
 
 @app.route('/')
 def hello_world():
