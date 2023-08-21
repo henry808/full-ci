@@ -1,12 +1,17 @@
 ---
 # This playbook installs and configures a web server on remote hosts using a python flask app.
+# Set hosts to prod_webservers, test_webservers, or dev_webservers
 # cd ansible
 # ansible-playbook -i inventory/hosts.yaml playbooks/install_docker.yaml
 - name: Install Docker
-  hosts: webserver1
+  hosts: prod_webservers
   become: true  # This allows Ansible to run commands with sudo privileges.
 
   tasks:
+    - name: Set environment to environmental var for host
+      ansible.builtin.env:
+        ENV: "{{ hostvars['webserver1']['env'] }}"
+
     - name: Update apt
       apt:
         update_cache: yes
