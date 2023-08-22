@@ -50,7 +50,7 @@ resource "aws_s3_bucket" "s3bucket" {
   acl    = "private"                # only the owner can access
 
   tags = {
-    Name        = "${var.project_name}-s3bucket-${var.env}"
+    Name        = "${var.company_name}-${var.project_name}-s3bucket-${var.env}"
     Environment = var.env
   }
 }
