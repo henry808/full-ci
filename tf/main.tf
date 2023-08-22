@@ -17,6 +17,7 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
+  # region = "us-west-2" # configured as env vars
   # access_key = "my-access-key" # configured as env vars
   # secret_key = "my-secret-key" # configured as env vars
 }
@@ -41,4 +42,15 @@ module "loadbalancer" {
   ec2_sg_id = module.instances.ec2-sg.id
   subnets = var.subnets
   ec2_instance_id_list = module.instances.ec2_list[*].id
+}
+
+# S3 Bucket
+resource "aws_s3_bucket" "s3bucket" {
+  bucket = "${var.project_name}-s3bucket-${var.env}"  # Ensure this name is globally unique
+  acl    = "private"                # only the owner can access
+
+  tags = {
+    Name        = "${var.project_name}-s3bucket-${var.env}"
+    Environment = var.env
+  }
 }
