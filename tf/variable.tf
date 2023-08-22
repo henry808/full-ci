@@ -1,12 +1,17 @@
 # Variables set in .tfvars file
-variable "env" {
+variable "company_name" {
   type = string
-  description = "Environment (dev, test, prod)"
+  description = "Company name for use with s3 bucket and other resources that need to be globally unique."
 }
 
 variable "project_name" {
   type = string
   description = "Unique project name"
+}
+
+variable "env" {
+  type = string
+  description = "Environment (dev, test, prod)"
 }
 
 variable "instance_count" {
