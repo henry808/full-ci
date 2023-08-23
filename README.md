@@ -21,7 +21,7 @@ terraform init \
 Example:
 ```bash
 terraform init \
-  -backend-config="henry808-webserver-s3bucket-prod" \
+  -backend-config="bucket=henry808-webserver-s3bucket-prod" \
   -backend-config="key=prod/terraform.tfstate" \
   -backend-config="region=us-west-2"
 ```
@@ -36,7 +36,7 @@ terraform plan -var-file="prod.tfvars"
 
 2. Ansible scripts for installing docker and then for installing the webapp via docker.
 
-> First Set hosts in playbook to environment: prod_webservers, test_webservers, or dev_webservers
+> First Set all hosts in playbook to environment: prod_webservers, test_webservers, or dev_webservers
 
 ```bash
 cd ansible
