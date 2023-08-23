@@ -7,11 +7,27 @@ An automated way to deploy a webapp. Currently it uses or more EC2 instances int
 
 Http only at the moment, but https coming later.
 
-
-# Current workflow
-1. Create ec2 instances and load balancer using terraform:
+# Infrastructure Workflow
+> Also for creating new modules and fir changing state
+1. Initialize the terraform.
 ```bash
 cd tf
+terraform init \
+  -backend-config="bucket=<your-bucket-name>" \
+  -backend-config="key=<path/state/terraform.tfstate>" \
+  -backend-config="region=us-west-2"
+```
+
+Example:
+```bash
+terraform init \
+  -backend-config="henry808-webserver-s3bucket-prod" \
+  -backend-config="key=prod/terraform.tfstate" \
+  -backend-config="region=us-west-2"
+```
+
+2. Create ec2 instances and load balancer using terraform:
+```bash
 terraform plan -var-file="prod.tfvars"
 ```
     1. Can create test or dev environments by makeing a dev.tfvars and test.tfvars and running terraform using them.
@@ -29,17 +45,13 @@ ansible-playbook -i inventory/hosts.yaml playbooks/install_docker_webapp.yaml
 ```
 3. Navigate to http://<LB public DNS>//:8080
 
-## Developing for this project.
-```
-cd existing_repo
-git remote add origin https://gitlab.com/henry808v21/projects/full-ci.git
-git branch -M main
-git push -uf origin main
-```
+## To Develop the Webapp Workflow
+Write in Python and run the docker file locally to make sure it works, then deploy to a dev environment using terraform. You can create a feature version of the infrastructure, but remember to destroy it when done.
 
 ## Develop Docker locally
+For Developing the Webapp
 
-### Build
+### Build locally
 ```bash
 cd docker/app
 docker build -t henry808/webapp .
@@ -53,8 +65,22 @@ docker run -d -e ENV=test -p 8080:8080 henry808/webapp
 ### Test locally:
 Navigate to [http://localhost:8080/](http://localhost:8080)
 
+### Build and push to registry for ec2 use:
+```bash
+docker build -t henry808/webapp:latest .
+docker push henry808/webapp:latest
+```
+
+### Run ansible script to download published docker image to e2 containers
+```bash
+cd ansible
+ansible-playbook -i inventory/hosts.yaml playbooks/install_docker_webapp.yaml
+```
+
+## Troubleshooting the docker container
 
 ### To copy files from docker container to local 
+Needed for troubleshooting
 ```bash
 docker cp da681f7a7b0d:/home/ubuntu/ /home/henry808/temp/webapp/
 ```
@@ -63,13 +89,6 @@ docker cp da681f7a7b0d:/home/ubuntu/ /home/henry808/temp/webapp/
 ```bash
 docker attach webapp
 docker exec -it webapp bash
-```
-
-
-### Build and push to registry for ec2 use:
-```bash
-docker build -t henry808/webapp:latest .
-docker push henry808/webapp:latest
 ```
 
 ## Possible additions
