@@ -5,6 +5,8 @@ This project is to create a CI solution using Terraform, Circle-CI, Ansible, AWS
 ## Intro
 An automated way to deploy a webapp. Currently it uses or more EC2 instances interfaced from a load balancer.
 
+s3 bucket is used for storing the terraform state file. Use the setup instructions to do a one time setup of the s3 bucket. You will have to use these setup instructions to create new environments and to edit or add policies or IAM when adding new people to the project.
+
 Http only at the moment, but https coming later.
 
 # Infrastructure Workflow
