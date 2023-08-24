@@ -69,17 +69,17 @@ To create a new environment:
  6. run ansible to webapp into each instance
  7. navigate to load balancer DN to test.
 
-# Setup Full Instructions for each new environment
+# Setup Full Instructions per Environment
 
 ## 1. Setup s3 bucket
-Instructions for setting up the variables and s3 bucket for a new environment
->Use these setup instructions to create new environments.
+Instructions for setting up the initial configs stored in variables and s3 bucket for a new environment
 1. Select the workspace and verify it is selected:
 ```bash
 terraform workspace select s3bucket
 terraform workspace list
 ```
-2. In the `tf` directory, create a `<env>.tfvars` file (example: `dev.tfvars`) in `tf` directory for your new environment. See `example.tfvars.bak` 
+2. In the `tf` directory, create a `<env>.tfvars` file (example: `dev.tfvars`) in `tf` directory for your new environment. 
+> See `example.tfvars.bak` for usage
 3. cd into tf/s3bucket and create a symlink to the file you just made: `ln -s ../dev.tfvars dev.tfvars`
 4. Verify:  `cat dev.tfvars` to make sure it shows your vriables
 5. From the s3bucket directory, run `terraform init` and then `terraform apply`
