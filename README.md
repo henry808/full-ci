@@ -15,9 +15,17 @@ Instructions for setting up the variables and s3 bucket for a new environment
 2. cd into tf/s3bucket and create a symlink to the file you just made: `ln -s ../dev.tfvars dev.tfvars`
 3. Verify:  `cat dev.tfvars` to make sure it shows your vriables
 4. From the s3bucket directory, run `terraform init` and then `terraform apply`
+5. Create s3bucket: 
+    1. `terraform plan -var-file="prod.tfvars`
+    2. `terraform plan -var-file="prod.tfvars``
 
-> The bucket will only be To add a policy to th
- 
+
+
+> The bucket will need to be recreated if a policy or IAM role is added.
+> cd s3bucket
+> terrafrom init 
+> 1. `terraform plan -var-file="prod.tfvars`
+> 2. `terraform plan -var-file="prod.tfvars``
 
 # Infrastructure Workflow
 > Also for creating new modules and fir changing state
