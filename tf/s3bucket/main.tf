@@ -27,28 +27,6 @@ provider "aws" {
   # secret_key = "my-secret-key" # configured as env vars
 }
 
-# EC2 Instances
-module "instances" {
-  source = "./modules/instances"
-  env = var.env
-  project_name = var.project_name
-  instance_count = var.instance_count
-  instance_type = var.instance_type
-  ami = var.ami
-  local_keypair_path = var.local_keypair_path
-  subnets = var.subnets
-}
-
-# Load Balancer
-module "loadbalancer" {
-  source = "./modules/loadbalancer"
-  env = var.env
-  project_name = var.project_name
-  ec2_sg_id = module.instances.ec2-sg.id
-  subnets = var.subnets
-  ec2_instance_id_list = module.instances.ec2_list[*].id
-}
-
 # S3 Bucket - only the owner can access
 # Can add a policy or IAM access later to allow others to access this bucket.
 resource "aws_s3_bucket" "s3bucket" {

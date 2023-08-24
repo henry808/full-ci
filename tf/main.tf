@@ -48,14 +48,3 @@ module "loadbalancer" {
   subnets = var.subnets
   ec2_instance_id_list = module.instances.ec2_list[*].id
 }
-
-# S3 Bucket - only the owner can access
-# Can add a policy or IAM access later to allow others to access this bucket.
-resource "aws_s3_bucket" "s3bucket" {
-  bucket = "${var.company_name}-${var.project_name}-s3bucket-${var.env}"  # Ensure this name is globally unique
-
-  tags = {
-    Name        = "${var.company_name}-${var.project_name}-s3bucket-${var.env}"
-    Environment = var.env
-  }
-}
