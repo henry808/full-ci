@@ -9,6 +9,16 @@ s3 bucket is used for storing the terraform state file. Use the setup instructio
 
 Http only at the moment, but https coming later.
 
+# Setup Instructions
+Instructions for setting up the variables and s3 bucket for a new environment
+1. In the `tf` directory, create a `<env>.tfvars` file (example: `dev.tfvars`) in `tf` directory for your new environment. See `example.tfvars.bak` 
+2. cd into tf/s3bucket and create a symlink to the file you just made: `ln -s ../dev.tfvars dev.tfvars`
+3. Verify:  `cat dev.tfvars` to make sure it shows your vriables
+4. From the s3bucket directory, run `terraform init` and then `terraform apply`
+
+> The bucket will only be To add a policy to th
+ 
+
 # Infrastructure Workflow
 > Also for creating new modules and fir changing state
 1. Initialize the terraform.
