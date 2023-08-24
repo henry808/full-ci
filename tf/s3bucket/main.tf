@@ -1,15 +1,11 @@
-# Build a webserver with load balancer in front of it.
+# Build a webserver s3 bucket
 #
 # To run:
-# cd tf
+# cd tf/s3bucket
 # terraform plan -var-file="prod.tfvars"
+# terraform apply -var-file="prod.tfvars"
 
 terraform {
-  backend "s3" {
-    bucket = "${var.company_name}-${var.project_name}-s3bucket-${var.env}"
-    key    = "${var.env}/terraform.tfstate"
-    # region = "us-west-2" # configured as env vars
-  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
