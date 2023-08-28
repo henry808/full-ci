@@ -92,7 +92,7 @@ terraform apply -var-file="prod.tfvars"
 ```
 
 # Setup Full Instructions per Environment
-## 1. Setup s3 bucket
+## (SKIP THIS PROCEDURE, IT IS NOT NEEDED. JUMP to Create Workspace) 1. Setup s3 bucket
 Instructions for setting up the initial configs stored in variables and s3 bucket for a new environment
 1. Select the workspace and verify it is selected:
 ```bash
@@ -107,20 +107,20 @@ cd tf
 cp example.tfvars.bak prod.tfvars
 ```
 3. Modify file and configurations.
-3. Change directory into the s3bucket dirctory and create the symlink to them variables in the main directory.
+4. Change directory into the s3bucket dirctory and create the symlink to them variables in the main directory.
 ```bash
 cd s3bucket
 ln -s ../dev.tfvars prod.tfvars
 ```
-4. Verify: cat to make sure it shows your variables
+5. Verify: cat to make sure it shows your variables
 ```bash
 cat prod.tfvars
 ```
-5. From the s3bucket directory initialize terriform
+6. From the s3bucket directory initialize terriform
 ```bash
 terraform init
 ```
-6. Create s3bucket:
+7. Create s3bucket:
 ```bash
 terraform plan -var-file="prod.tfvars"
 terraform apply -var-file="prod.tfvars"
@@ -132,6 +132,7 @@ terraform apply -var-file="prod.tfvars"
 > terrafrom init 
 > 1. `terraform plan -var-file="prod.tfvars`
 > 2. `terraform apply -var-file="prod.tfvars`
+
 
 ## 2. Create Workspace
 
@@ -246,18 +247,22 @@ docker exec -it webapp bash
 4. Lock ansible docker pull script to a version and remove force pull.
 5. Use IAM Role
 6. Create VPC and subnets (Maybe in another repo but use them here)
-7. Add feature envs (very easy, just add a feature to s3 key and to localvars and add new tfvars for each)
-8. 
+7. Add feature (developer) envs (just add a feature to s3 key and to variables.tf and add new tfvars for each)
+8. Back up statefiles.
 
 # Workspaces
 Current workspaces:
 
-## State files are stored (todo: Change to table)
-1. s3bucket - local workspace for managing s3 buckets
-2. dev - on dev bucket
-3. prod - on prod bucket
+## State files are stored here
 
-> Create more for each environment, but manage buckets with the s3bucket workspace
+| Workspace | State File Location   |
+|-----------|-----------------------|
+| s3bucket  | Local workspace       |
+| dev       | Dev bucket            |
+| test      | Test bucket           |
+| prod      | Prod bucket           |
+
+> Please note that in the markdown table, the "State File Location" column corresponds to the storage location of the state files for each workspace.
 
 ### To create
 1. Create new workspace
