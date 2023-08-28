@@ -32,15 +32,15 @@ Stored on dockerhub
 
 ## Workspaces/Environments
 Each environment is managed using a terraform workspace. The statefile is stored in the s3 bucket for that environment. 
-> To avoid a circular dependancy problem, s3 buckets are part of a seperate terraform workspace
+> To avoid a circular dependancy problem, s3 buckets are part of a seperate terraform workspace called s3bucket
 
 Any number of environments can be created, but it is recommended to create:
 1. dev
 2. test
 3. prod
-4. feature or stage as needed
+4. feature or stage as needed. Destroy them when done.
 
-Environments each need an <env>.tfvars file to store their configs. Make sure to specify this file when running terraform.
+Environments each need an `<env>.tfvars` file to store their configs. Make sure to specify this file when running terraform.
 
 # Setup Overview
 
@@ -55,7 +55,7 @@ Install these into your dev environment:
 6. IDE (I used VSC)
 
 ## Set up s3 buckets
-These need to exist before any other infrastructure because terraforms tate is stored in them.
+These need to exist before any other infrastructure because terraform's state is stored in them.
 
 ## Set up of an environment
 
@@ -65,12 +65,12 @@ To create a new environment:
  3. select environment workspace
  3. init terraform for environment
  4. apply terriform to build instances and load balancer
- 5. run ansible to install docker on each instance
- 6. run ansible to webapp into each instance
- 7. navigate to load balancer DN to test.
+ 5. for each instance, run ansible playbook to install docker.
+ 6. for each instance, run ansible playbook to pull and run webapp docker image.
+ 7. test each instacne by navigating to public DNS.
+ 8. navigate to load balancer public DNS to test.
 
 # Setup Full Instructions per Environment
-
 ## 1. Setup s3 bucket
 Instructions for setting up the initial configs stored in variables and s3 bucket for a new environment
 1. Select the workspace and verify it is selected:
@@ -80,9 +80,24 @@ terraform workspace list
 ```
 2. In the `tf` directory, create a `<env>.tfvars` file (example: `dev.tfvars`) in `tf` directory for your new environment. 
 > See `example.tfvars.bak` for usage
-3. cd into tf/s3bucket and create a symlink to the file you just made: `ln -s ../dev.tfvars dev.tfvars`
-4. Verify:  `cat dev.tfvars` to make sure it shows your vriables
-5. From the s3bucket directory, run `terraform init` and then `terraform apply`
+```bash
+cd tf
+cp example.tfvars.bak prod.tfvars
+```
+3. Modify file and configurations.
+3. Change directory into the s3bucket dirctory and create the symlink to them variables in the main directory.
+```bash
+cd s3bucket
+ln -s ../dev.tfvars prod.tfvars
+```
+4. Verify: cat to make sure it shows your variables
+```bash
+cat prod.tfvars
+```
+5. From the s3bucket directory initialize terriform
+```bash
+terraform init
+```
 6. Create s3bucket:
 ```bash
 terraform plan -var-file="prod.tfvars"
@@ -91,7 +106,7 @@ terraform apply -var-file="prod.tfvars"
 
 
 > The bucket will need to be rebuilt if a policy or IAM role is added. For example if you want to add a new dev.
-> cd s3bucket
+> cd tf/s3bucket
 > terrafrom init 
 > 1. `terraform plan -var-file="prod.tfvars`
 > 2. `terraform apply -var-file="prod.tfvars`
@@ -109,7 +124,7 @@ terraform workspace new prod
 terraform workspace select prod
 terraform workspace list
 ```
-2. Initialize the terraform. The environment needs to match the workspace. 
+2. Initialize the terraform. The environment needs to match the workspace. This will create the statefile in the bucket
 ```bash
 cd tf
 terraform init -migrate-state \
@@ -146,20 +161,20 @@ ansible-playbook -i inventory/hosts.yaml playbooks/install_docker_webapp.yaml
 ```
 5. Navigate to http://<LB public DNS>//:8080
 
-## To Develop the Webapp Workflow
-Write in Python and run the docker file locally to make sure it works, then deploy to a dev environment using terraform. You can create a feature version of the infrastructure, but remember to destroy it when done.
+# Developing the Webapp
 
-## Switch workspaces
-This need to be done so you use the right state file for each.
+## App Dev Workflow Overview
+1. Edit Python file
+2. build the docker image
+3. run the docker image locally and test it
+4. push image to dockerhub
+5. (Optional) create a feature environment
+6. deploy to a dev environment or feature environment using ansible script.
+7. Test on web browser.
 
-```bash
-terraform workspace select dev
-terraform workspace select prod
-```
+## Full Develop Webapp Steps
 
-
-
-## Develop Docker locally
+### Docker 
 For Developing the Webapp
 
 ### Build locally
@@ -211,9 +226,11 @@ docker exec -it webapp bash
 6. Create VPC and subnets (Maybe in another repo but use them here)
 
 
-## Workspaces
+# Workspaces
+Current workspaces:
 
-1. s3bucket - local
+## State files are stored (todo: Change to table)
+1. s3bucket - local workspace for managing s3 buckets
 2. dev - on dev bucket
 3. prod - on prod bucket
 
@@ -233,6 +250,15 @@ terraform workspace select prod
 ### To list or verify
 ```bash
 terraform workspace list
+```
+
+
+## Switch workspaces
+This need to be done so you use the right state file for each.
+
+```bash
+terraform workspace select dev
+terraform workspace select prod
 ```
 
 
