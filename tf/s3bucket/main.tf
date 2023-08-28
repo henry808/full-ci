@@ -6,6 +6,7 @@
 # terraform apply -var-file="prod.tfvars"
 
 terraform {
+  
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -23,9 +24,23 @@ provider "aws" {
   # secret_key = "my-secret-key" # configured as env vars
 }
 
+
+
+# Specify all environments.
+locals{
+  environments = ["dev", "test", "prod" ]
+}
+
+
+
+
+
+
 # S3 Bucket - only the owner can access
 # Can add a policy or IAM access later to allow others to access this bucket.
 resource "aws_s3_bucket" "s3bucket" {
+  count = length(local.environments)
+  
   bucket = "${var.company_name}-${var.project_name}-s3bucket-${var.env}"  # Ensure this name is globally unique
 
   tags = {
