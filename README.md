@@ -84,9 +84,13 @@ terraform workspace new s3bucket
 terraform workspace list
 ```
 3. Add more environments into list in _main.tf_ in this file if needed.
-4. Run terraform
+4. Link variables from main directory
 ```bash
-terraform init
+ln -s ../prod.tfvars prod.tfvars
+```
+5. Run terraform
+```bash
+terraform init # answer yes
 terraform plan -var-file="prod.tfvars"
 terraform apply -var-file="prod.tfvars"
 ```
@@ -110,7 +114,7 @@ cp example.tfvars.bak prod.tfvars
 4. Change directory into the s3bucket dirctory and create the symlink to them variables in the main directory.
 ```bash
 cd s3bucket
-ln -s ../dev.tfvars prod.tfvars
+ln -s ../prod.tfvars prod.tfvars
 ```
 5. Verify: cat to make sure it shows your variables
 ```bash
@@ -138,6 +142,7 @@ terraform apply -var-file="prod.tfvars"
 
 1. Create new workspace
 ```bash
+cd tf
 terraform workspace new prod
 ```
 
@@ -255,12 +260,14 @@ Current workspaces:
 
 ## State files are stored here
 
-| Workspace | State File Location   |
-|-----------|-----------------------|
-| s3bucket  | Local workspace       |
-| dev       | Dev bucket            |
-| test      | Test bucket           |
-| prod      | Prod bucket           |
+| Workspace | State File Location   |  Directory    |
+|-----------|-----------------------|---------------|
+| s3bucket  | Local workspace       | tf/s3bucket   |
+| dev       | Dev bucket            | tf            |
+| test      | Test bucket           | tf            |
+| prod      | Prod bucket           | tf            |
+
+Directory column specifies the directory where _terraform workspace_ command must be run from to access those workspaces.
 
 > Please note that in the markdown table, the "State File Location" column corresponds to the storage location of the state files for each workspace.
 
