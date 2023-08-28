@@ -79,7 +79,17 @@ Only need to do this once at the beginning. This will set up _dev_, _test_, and 
 cd tf/s3bucket
 terraform workspace new s3bucket
 ```
-
+2. Verify in s3bucket workspace
+```bash
+terraform workspace list
+```
+3. Add more environments into list in _main.tf_ in this file if needed.
+4. Run terraform
+```bash
+terraform init
+terraform plan -var-file="prod.tfvars"
+terraform apply -var-file="prod.tfvars"
+```
 
 # Setup Full Instructions per Environment
 ## 1. Setup s3 bucket
