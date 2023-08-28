@@ -70,11 +70,23 @@ To create a new environment:
  7. test each instacne by navigating to public DNS.
  8. navigate to load balancer public DNS to test.
 
+# Setup of S3 Buckets
+Only need to do this once at the beginning. This will set up _dev_, _test_, and _prod_ environments. If more are needed, add to main.tf before setting up.
+> Warning: Do not do this except at creation because it could delete statefiles for environments if done after those environments are set up.
+## Setup procedure
+1. Create workspace
+```bash
+cd tf/s3bucket
+terraform workspace new s3bucket
+```
+
+
 # Setup Full Instructions per Environment
 ## 1. Setup s3 bucket
 Instructions for setting up the initial configs stored in variables and s3 bucket for a new environment
 1. Select the workspace and verify it is selected:
 ```bash
+cd tf
 terraform workspace select s3bucket
 terraform workspace list
 ```
@@ -224,7 +236,8 @@ docker exec -it webapp bash
 4. Lock ansible docker pull script to a version and remove force pull.
 5. Use IAM Role
 6. Create VPC and subnets (Maybe in another repo but use them here)
-
+7. Add feature envs (very easy, just add a feature to s3 key and to localvars and add new tfvars for each)
+8. 
 
 # Workspaces
 Current workspaces:
