@@ -40,11 +40,11 @@ locals{
 # Can add a policy or IAM access later to allow others to access this bucket.
 resource "aws_s3_bucket" "s3bucket" {
   count = length(local.environments)
-  
-  bucket = "${var.company_name}-${var.project_name}-s3bucket-${var.env}"  # Ensure this name is globally unique
+
+  bucket = "${var.company_name}-${var.project_name}-s3bucket-${local.environments[count.index]}"  # Ensure this name is globally unique
 
   tags = {
-    Name        = "${var.company_name}-${var.project_name}-s3bucket-${var.env}"
-    Environment = var.env
+    Name        = "${var.company_name}-${var.project_name}-s3bucket-${local.environments[count.index]}"
+    Environment = local.environments[count.index]
   }
 }
