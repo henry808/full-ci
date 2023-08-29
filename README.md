@@ -183,9 +183,9 @@ terraform plan -var-file="prod.tfvars"
 cd ansible/inventory
 cp hosts.yaml.bak hosts.yaml
 ```
-5. Add domain name of ec2 instances to `hosts.yaml`. Example: ec2-52-39-31-93.us-west-2.compute.amazonaws.com. Also add path to private key.
+5. Add domain name of ec2 instances to `hosts.yaml`. Example: _ec2-52-39-31-93.us-west-2.compute.amazonaws_.com. Also add path to private key.
 
-6. Ansible scripts for installing docker and then for installing the webapp via docker.
+6. Run ansible scripts for installing docker and then for installing the webapp via docker.
 > First Set all hosts in playbook to environment: prod_webservers, test_webservers, or dev_webservers
 
 ```bash
