@@ -178,8 +178,14 @@ terraform plan -var-file="prod.tfvars"
 
  > public DNS for instances and load balancers are output when you run the terraform launcher. Instance DNS' are output for debugging.
 
-4. Ansible scripts for installing docker and then for installing the webapp via docker.
+4. Create `hosts.yaml` and add ec2 domain name to host file. see `ansible/inventory/hosts.yaml.bak` for example.
+```bash
+cd ansible/inventory
+cp hosts.yaml.bak hosts.yaml
+```
+5. Add domain name of ec2 instances to `hosts.yaml`. Example: ec2-52-39-31-93.us-west-2.compute.amazonaws.com. Also add path to private key.
 
+6. Ansible scripts for installing docker and then for installing the webapp via docker.
 > First Set all hosts in playbook to environment: prod_webservers, test_webservers, or dev_webservers
 
 ```bash
@@ -244,6 +250,10 @@ docker cp da681f7a7b0d:/home/ubuntu/ /home/henry808/temp/webapp/
 docker attach webapp
 docker exec -it webapp bash
 ```
+
+# Make changes to terraforom infrastructuer:
+
+
 
 ## Possible additions
 1. Add ASG
