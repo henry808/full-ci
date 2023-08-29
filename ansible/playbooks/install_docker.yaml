@@ -92,3 +92,11 @@
       debug: 
         msg: "Docker not installed. Install failed."
       when: docker_version.rc != 0
+
+    # install pyhton3 and pip3
+    - name: Install Python and pip
+      apt:
+        name: 
+          - python3
+          - python3-pip
+        state: present
