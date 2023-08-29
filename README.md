@@ -193,6 +193,8 @@ cd ansible
 ansible-playbook -i inventory/hosts.yaml playbooks/install_docker.yaml
 ansible-playbook -i inventory/hosts.yaml playbooks/install_docker_webapp.yaml
 ```
+> Answer yes first time running with new host to add hostnames to your local hostfile.
+
 5. Navigate to http://<LB public DNS>//:8080
 
 # Developing the Webapp
