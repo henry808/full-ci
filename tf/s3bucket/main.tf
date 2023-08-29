@@ -6,7 +6,9 @@
 # terraform apply -var-file="prod.tfvars"
 
 terraform {
-  
+  backend "local" {
+    path = "terraform.tfstate"
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -14,6 +16,7 @@ terraform {
     }
   }
 }
+
 
 # Variables defined in variables.tf and set in main.tf
 
@@ -25,15 +28,10 @@ provider "aws" {
 }
 
 
-
-# Specify all environments.
+# Specify all needed environments here
 locals{
   environments = ["dev", "test", "prod" ]
 }
-
-
-
-
 
 
 # S3 Bucket - only the owner can access
