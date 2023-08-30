@@ -1,10 +1,13 @@
+import os
 from flask import Flask
+
 app = Flask(__name__)
 
+env = os.environ.get('ENV', 'defaultenv')
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return f'Hello, World!\nEnvironment: {env}'
 
 
 if __name__ == '__main__':

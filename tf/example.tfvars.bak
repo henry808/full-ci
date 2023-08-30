@@ -1,0 +1,9 @@
+# Variables
+company_name = "<name of company; exp. ai-treats>"
+project_name = "<name of project; exp. webserver>"
+env = "<dev, test, prod, or feature>"
+instance_count = 1 # integer 1 or greater
+instance_type = "t2.micro" # instance type
+ami = "ami-03f65b8614a860c29" # ubuntu 22.04 x86 in us-west-2 or other image
+local_keypair_path = "~/.ssh/key.pub" # location of public key
+subnets = ["subnet-ec528b94", "subnet-6619b13b", "subnet-3df00a77"] # use default subnets a,b,c

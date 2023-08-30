@@ -40,6 +40,11 @@ tf/.terraform/
 tf/terraform.tfstate
 tf/terraform.tfstate.backup
 
+tf/s3bucket/.terraform.lock.hcl
+tf/s3bucket/.terraform/
+tf/s3bucket/terraform.tfstate
+tf/s3bucket/terraform.tfstate.backup
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

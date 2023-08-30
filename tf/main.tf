@@ -5,6 +5,11 @@
 # terraform plan -var-file="prod.tfvars"
 
 terraform {
+  backend "s3" {
+    bucket = "${var.company_name}-${var.project_name}-s3bucket-${var.env}"
+    key    = "${var.env}/terraform.tfstate"
+    # region = "us-west-2" # configured as env vars
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -17,6 +22,7 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
+  # region = "us-west-2" # configured as env vars
   # access_key = "my-access-key" # configured as env vars
   # secret_key = "my-secret-key" # configured as env vars
 }

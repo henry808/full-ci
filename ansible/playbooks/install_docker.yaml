@@ -1,15 +1,36 @@
 ---
 # This playbook installs and configures a web server on remote hosts using a python flask app.
+# Set hosts to prod_webservers, test_webservers, or dev_webservers
 # cd ansible
 # ansible-playbook -i inventory/hosts.yaml playbooks/install_docker.yaml
 - name: Install Docker
-  hosts: webserver1
-  become: true  # This allows Ansible to run commands with sudo privileges.
+  hosts: prod_webservers
+  become: true  # Adds sudo privileges for all commands below.
+
+  # environment:
+  #   ENV: "{{ hostvars[inventory_hostname].env }}"
 
   tasks:
+    # Update apt
     - name: Update apt
       apt:
         update_cache: yes
+
+    # Set ENV to prod, test, dev, etc. (replace line in file)
+    - name: Set ENV system-wide
+      lineinfile:
+        path: /etc/environment
+        regexp: '^ENV='
+        line: 'ENV={{ hostvars[inventory_hostname].env }}'
+        state: present
+    # Source file and print ENV.
+    - name: Read environment variables from /etc/environment
+      shell: . /etc/environment && echo $ENV
+      register: env_output
+
+    - name: Display ENV value
+      debug:
+        var: env_output.stdout
 
     # Install packages needed for adding Docker repo over HTTPS.
     - name: Install Docker prerequisites
@@ -71,3 +92,11 @@
       debug: 
         msg: "Docker not installed. Install failed."
       when: docker_version.rc != 0
+
+    # install pyhton3 and pip3
+    - name: Install Python and pip
+      apt:
+        name: 
+          - python3
+          - python3-pip
+        state: present

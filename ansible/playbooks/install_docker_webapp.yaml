@@ -1,9 +1,10 @@
 ---
 # Playbook to run a private Docker Hub image for a webapp
+# Set hosts to prod_webservers, test_webservers, or dev_webservers
 # cd ansible
 # ansible-playbook -i inventory/hosts.yaml playbooks/install_docker_webapp.yaml
 - name: Install Docker
-  hosts: webserver1
+  hosts: prod_webservers
 
   tasks:
   # To use docker command
@@ -12,18 +13,26 @@
       name: docker-py
       state: present
 
-  # Pulls private image from Docker Hub using credentials  
+  # Set environmental variable
+  - name: Set ENV variable from shell command
+    command: "echo $ENV"
+    register: env_output
+
+  # Pulls image from Docker Hub.
   - name: Pull private Docker Hub image
     docker_image:
-      name: henry808/webapp_private
+      name: henry808/webapp
       tag: latest
       source: pull
+      force_source: yes
 
   # Runs a container using the private Docker Hub image
   - name: Run container from image
     docker_container:
       name: webapp
-      image: henry808/webapp_private:latest
+      image: henry808/webapp:latest
       ports:
         - "8080:8080"
+      env:
+        ENV: "{{ env_output.stdout }}"
       state: started
