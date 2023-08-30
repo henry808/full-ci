@@ -161,8 +161,7 @@ terraform init -migrate-state \
   -backend-config="region=us-west-2"
 ```
 
-> When you are creating for the first time, use `terraform -migrate-state \` as first line, but answer no when it asks if you want to migrate the state.
-
+> When you are creating for the first time, use `terraform -migrate-state \` as first line. For all other workspace, you just need to use the `terraform init` command (may not need to use backend config first time either.)
 Example:
 ```bash
 terraform init -migrate-state \
@@ -186,7 +185,8 @@ cp hosts.yaml.bak hosts.yaml
 5. Add domain name of ec2 instances to `hosts.yaml`. Example: _ec2-52-39-31-93.us-west-2.compute.amazonaws_.com. Also add path to private key.
 
 6. Run ansible scripts for installing docker and then for installing the webapp via docker.
-> First Set all hosts in playbook to environment: prod_webservers, test_webservers, or dev_webservers
+> First Set all hosts in playbook to environment: prod_webservers, test_webservers, or dev_webservers.
+> Also select hosts in the playbook before running.
 
 ```bash
 cd ansible
