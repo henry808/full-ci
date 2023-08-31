@@ -7,14 +7,14 @@ terraform {
 
 # SG for ALB
 resource "aws_security_group" "alb-sg" {
-  name        = "${var.project_name}_alb_sg-${var.env}"
-  
+  name = "${var.project_name}_alb_sg-${var.env}"
+
   # Allow inbound HTTP traffic on port 8080 from anywhere (listener)
   ingress {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks     = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Allow all outbound traffic
@@ -57,8 +57,8 @@ resource "aws_lb_target_group" "tg" {
     timeout             = 3
     healthy_threshold   = 3
     unhealthy_threshold = 3
-    protocol = "HTTP"
-    port = "8080"
+    protocol            = "HTTP"
+    port                = "8080"
   }
 
   tags = {
@@ -68,7 +68,7 @@ resource "aws_lb_target_group" "tg" {
 
 # List your ec2 instances in the target group here
 resource "aws_lb_target_group_attachment" "tg-attachment" {
-  count = length(var.ec2_instance_id_list)
+  count            = length(var.ec2_instance_id_list)
   target_group_arn = aws_lb_target_group.tg.arn
   target_id        = var.ec2_instance_id_list[count.index]
   port             = 8080
