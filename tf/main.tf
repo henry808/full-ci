@@ -29,22 +29,22 @@ provider "aws" {
 
 # EC2 Instances
 module "instances" {
-  source = "./modules/instances"
-  env = var.env
-  project_name = var.project_name
-  instance_count = var.instance_count
-  instance_type = var.instance_type
-  ami = var.ami
+  source             = "./modules/instances"
+  env                = var.env
+  project_name       = var.project_name
+  instance_count     = var.instance_count
+  instance_type      = var.instance_type
+  ami                = var.ami
   local_keypair_path = var.local_keypair_path
-  subnets = var.subnets
+  subnets            = var.subnets
 }
 
 # Load Balancer
 module "loadbalancer" {
-  source = "./modules/loadbalancer"
-  env = var.env
-  project_name = var.project_name
-  ec2_sg_id = module.instances.ec2-sg.id
-  subnets = var.subnets
+  source               = "./modules/loadbalancer"
+  env                  = var.env
+  project_name         = var.project_name
+  ec2_sg_id            = module.instances.ec2-sg.id
+  subnets              = var.subnets
   ec2_instance_id_list = module.instances.ec2_list[*].id
 }
