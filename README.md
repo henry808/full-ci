@@ -266,6 +266,7 @@ docker exec -it webapp bash
 6. Create VPC and subnets (Maybe in another repo but use them here)
 7. Add feature (developer) envs (just add a feature to s3 key and to variables.tf and add new tfvars for each)
 8. Back up statefiles.
+9. Add Test harness and test job.
 
 # Workspaces
 Current workspaces:
