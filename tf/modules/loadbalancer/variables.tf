@@ -1,25 +1,25 @@
 # Parameters for module.
 variable "env" {
-  type = string
+  type        = string
   description = "Environment (dev, test, prod)"
 }
 
 variable "project_name" {
-  type = string
+  type        = string
   description = "Unique project name"
 }
 
 variable "ec2_sg_id" {
-  type = string
+  type        = string
   description = "ID of Instance Security Group needed for connection with ALB SG"
 }
 
 variable "subnets" {
-  type = list(string)
+  type        = list(string)
   description = "List of subnets"
 }
 
 variable "ec2_instance_id_list" {
-  type = list(string)
-  description = "List of IDs of all Instances"  
+  type        = list(string)
+  description = "List of IDs of all Instances"
 }
