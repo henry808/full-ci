@@ -1,0 +1,33 @@
+version: 2.1
+
+jobs:
+  build:
+    working_directory: ~
+    docker:
+      - image: "circleci/python:3.6.4"
+    steps:
+      - checkout
+      - run: echo "build done"
+  deploy:
+    working_directory: ~
+    docker:
+      - image: "circleci/python:3.6.4"
+    steps:
+      - checkout
+      - run: echo "deploy done"
+
+workflows:
+  version: 2
+
+  dev_workflow:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: main
+      - deploy:
+          filters:
+            branches:
+              only: main
+          requires:
+          - build
