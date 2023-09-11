@@ -34,8 +34,13 @@ locals{
 }
 
 
-# S3 Bucket - only the owner can access
-# Can add a policy or IAM access later to allow others to access this bucket.
+# Group to access bucket
+# Add user or service account to this group to give access to bucket
+resource "aws_iam_group" "access_group" {
+  name = "${var.company_name}-${var.project_name}"
+}
+
+# S3 Bucket
 resource "aws_s3_bucket" "s3bucket" {
   count = length(local.environments)
 
@@ -45,4 +50,37 @@ resource "aws_s3_bucket" "s3bucket" {
     Name        = "${var.company_name}-${var.project_name}-s3bucket-${local.environments[count.index]}"
     Environment = local.environments[count.index]
   }
+}
+
+# Policy that allows what is needed for terraform state file
+resource "aws_s3_bucket_policy" "s3_bucket_policy" {
+  count  = length(local.environments)
+  bucket = aws_s3_bucket.s3bucket[count.index].id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:group/${aws_iam_group.access_group.name}"
+        }
+        Action = [
+          "s3:ListBucket",
+          "s3:GetObject",
+          "s3:PutObject"
+        ]
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.s3bucket[count.index].id}",
+          "arn:aws:s3:::${aws_s3_bucket.s3bucket[count.index].id}/*"
+        ]
+      }
+    ]
+  })
+}
+
+data "aws_caller_identity" "current" {}
+
+output "iam_group_arn" {
+  value = aws_iam_group.example_group.arn
 }
