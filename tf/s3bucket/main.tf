@@ -29,8 +29,8 @@ provider "aws" {
 
 
 # Specify all needed environments here
-locals{
-  environments = ["dev", "test", "prod" ]
+locals {
+  environments = ["dev", "test", "prod"]
 }
 
 
@@ -44,7 +44,7 @@ resource "aws_iam_group" "access_group" {
 resource "aws_s3_bucket" "s3bucket" {
   count = length(local.environments)
 
-  bucket = "${var.company_name}-${var.project_name}-s3bucket-${local.environments[count.index]}"  # Ensure this name is globally unique
+  bucket = "${var.company_name}-${var.project_name}-s3bucket-${local.environments[count.index]}" # Ensure this name is globally unique
 
   tags = {
     Name        = "${var.company_name}-${var.project_name}-s3bucket-${local.environments[count.index]}"
@@ -61,7 +61,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
+        Effect = "Allow"
         Principal = {
           AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:group/${aws_iam_group.access_group.name}"
         }
@@ -82,5 +82,5 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy" {
 data "aws_caller_identity" "current" {}
 
 output "iam_group_arn" {
-  value = aws_iam_group.example_group.arn
+  value = aws_iam_group.access_group.arn
 }

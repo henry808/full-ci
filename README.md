@@ -88,7 +88,7 @@ terraform workspace new s3bucket
 terraform workspace list
 ```
 3. Add more environments into list in _main.tf_ in this file if needed.
-4. Link variables from main directory
+4. Link variables from main directory (Only have to use prod, since we are only using vars that are the same for all envs)
 ```bash
 ln -s ../prod.tfvars prod.tfvars
 ```
