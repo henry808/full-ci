@@ -72,7 +72,11 @@ To create a new environment:
 
 # Setup of S3 Buckets
 Only need to do this once at the beginning. This will set up _dev_, _test_, and _prod_ environments. If more are needed, add to main.tf before setting up.
+
+Will also create an IAM group and a policy allowing that group access. Then we can add new users to that group to allow them access.
+
 > Warning: Do not do this except at creation because it could delete statefiles for environments if done after those environments are set up.
+
 ## Setup procedure
 1. Create workspace
 ```bash
