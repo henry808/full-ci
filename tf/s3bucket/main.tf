@@ -33,13 +33,6 @@ locals {
   environments = ["dev", "test", "prod"]
 }
 
-
-# Group to access bucket
-# Add user or service account to this group to give access to bucket
-resource "aws_iam_group" "access_group" {
-  name = "${var.company_name}-${var.project_name}"
-}
-
 # S3 Bucket
 resource "aws_s3_bucket" "s3bucket" {
   count = length(local.environments)
@@ -52,29 +45,47 @@ resource "aws_s3_bucket" "s3bucket" {
   }
 }
 
-# Policy that allows what is needed for terraform state file
-resource "aws_s3_bucket_policy" "s3_bucket_policy" {
-  count  = length(local.environments)
-  bucket = aws_s3_bucket.s3bucket[count.index].id
+# Group to access bucket
+# Add user or service account to this group to give access to bucket
+resource "aws_iam_group" "access_group" {
+  name = "${var.company_name}-${var.project_name}"
+}
+
+# IAM policy to grant specific access to the S3 buckets for the IAM group.
+# This policy helps in maintaining secure access to the buckets, letting only group members perform these actions.
+resource "aws_iam_group_policy" "group_policy" {
+  name  = "${var.company_name}-${var.project_name}-policy"
+  group = aws_iam_group.access_group.name
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
+      # Allows the group to list the buckets, get the bucket locations, and list multipart uploads in the buckets.
       {
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:group/${aws_iam_group.access_group.name}"
-        }
-        Action = [
+        Effect   = "Allow",
+        Action   = [
           "s3:ListBucket",
-          "s3:GetObject",
-          "s3:PutObject"
-        ]
+          "s3:GetBucketLocation",
+          "s3:ListBucketMultipartUploads",
+        ],
         Resource = [
-          "arn:aws:s3:::${aws_s3_bucket.s3bucket[count.index].id}",
-          "arn:aws:s3:::${aws_s3_bucket.s3bucket[count.index].id}/*"
+          for bucket in aws_s3_bucket.s3bucket : bucket.arn
         ]
-      }
+      },
+      # Allows the group to perform object-level actions (put, get, delete) and manage multipart uploads within the buckets.
+      {
+        Effect   = "Allow",
+        Action   = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:ListMultipartUploadParts",
+          "s3:AbortMultipartUpload",
+        ],
+        Resource = [
+          for bucket in aws_s3_bucket.s3bucket : "${bucket.arn}/*"
+        ]
+      },
     ]
   })
 }
